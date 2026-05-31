@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
@@ -18,7 +17,6 @@ import com.example.cropdoctorai.data.ml.CropPrediction
 import com.example.cropdoctorai.data.remote.GeminiAnalysis
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -102,13 +100,44 @@ class CropReportGenerator @Inject constructor(
     }
 
     /**
-     * Generate a PDF report and save it to Downloads folder.
-     *
-     * @param prediction The TFLite model prediction
-     * @param analysis The Gemini AI analysis
-     * @param cropImage The original crop image bitmap
-     * @return File path of the saved PDF, or null on failure
+     * Helper class to manage PDF pagination state.
+     * Tracks the current page, y-position, and handles page breaks.
      */
+    private inner class PdfPaginator(
+        private val pdfDocument: PdfDocument
+    ) {
+        var pageNum = 1
+            private set
+        var y = 0f
+        var currentPage: PdfDocument.Page = startNewPage()
+            private set
+
+        private fun startNewPage(): PdfDocument.Page {
+            val pageInfo = PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, pageNum).create()
+            val page = pdfDocument.startPage(pageInfo)
+            fillPaint.color = BG_LIGHT
+            page.canvas.drawRect(0f, 0f, PAGE_WIDTH.toFloat(), PAGE_HEIGHT.toFloat(), fillPaint)
+            return page
+        }
+
+        val canvas: Canvas get() = currentPage.canvas
+
+        fun ensureSpace(requiredSpace: Float) {
+            if (y + requiredSpace > PAGE_HEIGHT - 60f) {
+                drawPageFooter(currentPage.canvas, pageNum)
+                pdfDocument.finishPage(currentPage)
+                pageNum++
+                currentPage = startNewPage()
+                y = 40f
+            }
+        }
+
+        fun finishCurrentPage() {
+            drawPageFooter(currentPage.canvas, pageNum)
+            pdfDocument.finishPage(currentPage)
+        }
+    }
+
     fun generateReport(
         prediction: CropPrediction,
         analysis: GeminiAnalysis,
@@ -119,17 +148,57 @@ class CropReportGenerator @Inject constructor(
         val reportDate = dateFormat.format(Date())
 
         try {
-            // ═══ PAGE 1 ═══
-            val page1Info = PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
-            val page1 = pdfDocument.startPage(page1Info)
-            var y = drawPage1(page1.canvas, prediction, analysis, cropImage, reportDate)
-            pdfDocument.finishPage(page1)
+            val paginator = PdfPaginator(pdfDocument)
 
-            // ═══ PAGE 2 ═══ (Remedies)
-            val page2Info = PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 2).create()
-            val page2 = pdfDocument.startPage(page2Info)
-            drawPage2(page2.canvas, prediction, analysis, reportDate)
-            pdfDocument.finishPage(page2)
+            // ═══ PAGE 1: Header + Diagnosis + About ═══
+            paginator.y = drawPage1(paginator.canvas, prediction, analysis, cropImage, reportDate)
+
+            // ═══ Remedies (dynamic pagination) ═══
+            paginator.y += 20f
+            paginator.ensureSpace(150f)
+            paginator.y = drawRemedySection(
+                paginator.canvas, paginator.y,
+                title = "[ORGANIC / BIOLOGICAL REMEDY]  Natural & Bio-based Treatments",
+                items = analysis.organicRemedies,
+                headerColor = ORGANIC_GREEN,
+                bgColor = Color.rgb(232, 245, 233)
+            )
+
+            paginator.y += 20f
+            paginator.ensureSpace(150f)
+            paginator.y = drawRemedySection(
+                paginator.canvas, paginator.y,
+                title = "[CHEMICAL REMEDY]  Approved Agrochemical Treatments",
+                items = analysis.chemicalRemedies,
+                headerColor = CHEMICAL_ORANGE,
+                bgColor = Color.rgb(255, 243, 224)
+            )
+
+            paginator.y += 20f
+            paginator.ensureSpace(150f)
+            paginator.y = drawRemedySection(
+                paginator.canvas, paginator.y,
+                title = "[PREVENTION TIPS]  Proactive Crop Protection Measures",
+                items = analysis.preventionTips,
+                headerColor = PREVENTION_RED,
+                bgColor = Color.rgb(255, 235, 238)
+            )
+
+            // ═══ Disclaimer ═══
+            paginator.y += 30f
+            paginator.ensureSpace(60f)
+            smallPaint.color = TEXT_GRAY
+            paginator.canvas.drawText(
+                "⚠ This report is AI-generated using Custom Crop_Model.tflite + Gemini AI.",
+                MARGIN, paginator.y, smallPaint
+            )
+            paginator.y += 13f
+            paginator.canvas.drawText(
+                "Always consult a certified agronomist before applying any treatment.",
+                MARGIN, paginator.y, smallPaint
+            )
+
+            paginator.finishCurrentPage()
 
             // Save to Downloads
             return savePdf(pdfDocument, prediction)
@@ -164,9 +233,6 @@ class CropReportGenerator @Inject constructor(
         // ── About the Detected Condition ──
         y += 20f
         y = drawAboutSection(canvas, y, analysis.aboutDisease)
-
-        // ── Footer ──
-        drawPageFooter(canvas, 1)
 
         return y
     }
@@ -334,60 +400,7 @@ class CropReportGenerator @Inject constructor(
     // PAGE 2: Remedy Sections
     // ═══════════════════════════════════════════
 
-    private fun drawPage2(
-        canvas: Canvas,
-        prediction: CropPrediction,
-        analysis: GeminiAnalysis,
-        reportDate: String
-    ) {
-        // Light background
-        fillPaint.color = BG_LIGHT
-        canvas.drawRect(0f, 0f, PAGE_WIDTH.toFloat(), PAGE_HEIGHT.toFloat(), fillPaint)
-
-        var y = 30f
-
-        // ── Organic / Biological Remedy ──
-        y = drawRemedySection(
-            canvas, y,
-            title = "[ORGANIC / BIOLOGICAL REMEDY]  Natural & Bio-based Treatments",
-            items = analysis.organicRemedies,
-            headerColor = ORGANIC_GREEN,
-            bgColor = Color.rgb(232, 245, 233)
-        )
-
-        y += 20f
-
-        // ── Chemical Remedy ──
-        y = drawRemedySection(
-            canvas, y,
-            title = "[CHEMICAL REMEDY]  Approved Agrochemical Treatments",
-            items = analysis.chemicalRemedies,
-            headerColor = CHEMICAL_ORANGE,
-            bgColor = Color.rgb(255, 243, 224)
-        )
-
-        y += 20f
-
-        // ── Prevention Tips ──
-        y = drawRemedySection(
-            canvas, y,
-            title = "[PREVENTION TIPS]  Proactive Crop Protection Measures",
-            items = analysis.preventionTips,
-            headerColor = PREVENTION_RED,
-            bgColor = Color.rgb(255, 235, 238)
-        )
-
-        // ── Disclaimer footer ──
-        y += 30f
-        smallPaint.color = TEXT_GRAY
-        val disclaimer = "⚠ This report is AI-generated using Custom Crop_Model.tflite + Gemini AI."
-        canvas.drawText(disclaimer, MARGIN, y, smallPaint)
-        y += 13f
-        canvas.drawText("Always consult a certified agronomist before applying any treatment.", MARGIN, y, smallPaint)
-
-        // Page footer
-        drawPageFooter(canvas, 2)
-    }
+    // (drawPage2 removed as pagination is now dynamic)
 
     private fun drawRemedySection(
         canvas: Canvas,
@@ -456,7 +469,7 @@ class CropReportGenerator @Inject constructor(
 
         // Page number
         smallPaint.color = TEXT_GRAY
-        val pageText = "Page $pageNumber of 2  |  CropDoctor.AI Report"
+        val pageText = "Page $pageNumber  |  CropDoctor.AI Report"
         val pageTextWidth = smallPaint.measureText(pageText)
         canvas.drawText(pageText, (PAGE_WIDTH - pageTextWidth) / 2f, PAGE_HEIGHT - 15f, smallPaint)
     }
@@ -515,7 +528,7 @@ class CropReportGenerator @Inject constructor(
                 context.contentResolver.openOutputStream(uri)?.use { outputStream ->
                     pdfDocument.writeTo(outputStream)
                 }
-                fileName
+                "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath}/$fileName"
             } else {
                 // Legacy storage
                 val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)

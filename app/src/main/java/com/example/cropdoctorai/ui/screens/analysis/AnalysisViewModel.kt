@@ -112,6 +112,7 @@ class AnalysisViewModel @Inject constructor(
                     loadBitmapFromUri(imageUri)
                 } ?: throw Exception("Failed to load image. Please try a different image.")
 
+                currentBitmap?.recycle()
                 currentBitmap = bitmap
 
                 // Step 2: Running TFLite inference
@@ -199,6 +200,7 @@ class AnalysisViewModel @Inject constructor(
      * Reset to idle state for a new analysis.
      */
     fun clearImage() {
+        currentBitmap?.recycle()
         currentBitmap = null
         _uiState.value = AnalysisUiState.Idle
     }
@@ -216,6 +218,7 @@ class AnalysisViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         cropClassifier.close()
+        currentBitmap?.recycle()
         currentBitmap = null
     }
 

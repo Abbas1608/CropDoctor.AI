@@ -65,6 +65,14 @@ import com.example.cropdoctorai.ui.screens.analysis.components.AboutDiseaseCard
 import com.example.cropdoctorai.ui.screens.analysis.components.RemedyCard
 import com.example.cropdoctorai.ui.screens.analysis.components.ResultCardsRow
 import com.example.cropdoctorai.ui.screens.analysis.components.UploadSection
+import com.example.cropdoctorai.ui.theme.ForestGreen
+import com.example.cropdoctorai.ui.theme.ForestGreenDeep
+import com.example.cropdoctorai.ui.theme.ForestGreenDark
+import com.example.cropdoctorai.ui.theme.GlassBorder
+import com.example.cropdoctorai.ui.theme.MintGlow
+import com.example.cropdoctorai.ui.theme.TextPrimary
+import com.example.cropdoctorai.ui.theme.TextSecondary
+import com.example.cropdoctorai.ui.theme.TextMuted
 
 /**
  * Main Analysis screen composable.
@@ -193,7 +201,7 @@ private fun TopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
+            .background(ForestGreenDark)
             .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -201,26 +209,26 @@ private fun TopBar(onBack: () -> Unit) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
-                tint = Color(0xFF2E7D32)
+                tint = MintGlow
             )
         }
         Text(
             text = "🌿 AI Crops Doctor",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = TextPrimary
         )
         Spacer(modifier = Modifier.width(8.dp))
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(6.dp))
-                .background(Color(0xFF2E7D32))
+                .background(MintGlow)
                 .padding(horizontal = 8.dp, vertical = 3.dp)
         ) {
             Text(
                 text = "CUSTOM AI MODEL",
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.White,
+                color = ForestGreenDeep,
                 fontWeight = FontWeight.Bold,
                 fontSize = 9.sp
             )
@@ -235,7 +243,7 @@ private fun HeaderSection() {
                 "then Gemini AI provides disease diagnosis, treatment advice, " +
                 "and a downloadable PDF report.",
         style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = TextSecondary,
         lineHeight = 18.sp
     )
 }
@@ -253,8 +261,8 @@ private fun ImagePreviewSection(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+            .background(Color.White.copy(alpha = 0.05f))
+            .border(1.dp, GlassBorder, RoundedCornerShape(12.dp))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -266,7 +274,7 @@ private fun ImagePreviewSection(
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp)),
+                    .border(1.dp, GlassBorder, RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop
             )
             // Close button
@@ -276,7 +284,7 @@ private fun ImagePreviewSection(
                     .padding(4.dp)
                     .size(24.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF616161))
+                    .background(Color.Black.copy(alpha = 0.4f))
                     .clickable { onClear() },
                 contentAlignment = Alignment.Center
             ) {
@@ -297,7 +305,7 @@ private fun ImagePreviewSection(
                 Icon(
                     imageVector = Icons.Default.Image,
                     contentDescription = null,
-                    tint = Color(0xFF9E9E9E),
+                    tint = TextMuted,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -305,14 +313,14 @@ private fun ImagePreviewSection(
                     text = fileName,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = TextPrimary
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Size: $fileSize · Type: $mimeType",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = TextSecondary
             )
             Spacer(modifier = Modifier.height(14.dp))
 
@@ -321,8 +329,8 @@ private fun ImagePreviewSection(
                 onClick = onAnalyze,
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF43A047),
-                    contentColor = Color.White
+                    containerColor = MintGlow,
+                    contentColor = ForestGreenDeep
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -349,14 +357,14 @@ private fun AnalyzingSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color.White.copy(alpha = 0.05f))
+            .border(1.dp, GlassBorder, RoundedCornerShape(14.dp))
             .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator(
-            color = Color(0xFF43A047),
+            color = MintGlow,
             modifier = Modifier.size(48.dp),
             strokeWidth = 4.dp
         )
@@ -364,14 +372,14 @@ private fun AnalyzingSection(
         Text(
             text = progressMessage,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF43A047),
+            color = MintGlow,
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Please wait while our AI analyzes your crop...",
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = TextSecondary
         )
     }
 }
@@ -406,7 +414,7 @@ private fun ResultsSection(
                         text = "Analysis Results",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = TextPrimary
                     )
                 }
 
@@ -417,29 +425,33 @@ private fun ResultsSection(
                         enabled = !state.isPdfGenerating,
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF1B4D3E),
-                            contentColor = Color.White,
-                            disabledContainerColor = Color(0xFF90A4AE)
+                            containerColor = MintGlow,
+                            contentColor = ForestGreenDeep,
+                            disabledContainerColor = ForestGreen.copy(alpha = 0.5f)
+                        ),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                            horizontal = 10.dp, vertical = 6.dp
                         )
                     ) {
                         if (state.isPdfGenerating) {
                             CircularProgressIndicator(
-                                modifier = Modifier.size(16.dp),
-                                color = Color.White,
+                                modifier = Modifier.size(14.dp),
+                                color = ForestGreenDeep,
                                 strokeWidth = 2.dp
                             )
                         } else {
                             Icon(
                                 imageVector = Icons.Default.Download,
                                 contentDescription = null,
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(14.dp)
                             )
                         }
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = if (state.isPdfGenerating) "Generating..." else "Download Full Report",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.SemiBold
+                            text = if (state.isPdfGenerating) "..." else "PDF",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 10.sp
                         )
                     }
                 }
@@ -466,8 +478,8 @@ private fun ResultsSection(
                     title = "Organic / Biological Remedy",
                     emoji = "🟢",
                     items = state.geminiAnalysis.organicRemedies,
-                    headerColor = Color(0xFF2E7D32),
-                    bgColor = Color(0xFFF1F8E9)
+                    headerColor = Color(0xFF81C784),
+                    bgColor = Color.White.copy(alpha = 0.05f)
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -477,8 +489,8 @@ private fun ResultsSection(
                     title = "Chemical Remedy",
                     emoji = "🟠",
                     items = state.geminiAnalysis.chemicalRemedies,
-                    headerColor = Color(0xFFEF6C00),
-                    bgColor = Color(0xFFFFF3E0)
+                    headerColor = Color(0xFFFFB74D),
+                    bgColor = Color.White.copy(alpha = 0.05f)
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -488,8 +500,8 @@ private fun ResultsSection(
                     title = "Prevention Tips",
                     emoji = "🔴",
                     items = state.geminiAnalysis.preventionTips,
-                    headerColor = Color(0xFFC62828),
-                    bgColor = Color(0xFFFFEBEE)
+                    headerColor = Color(0xFFE57373),
+                    bgColor = Color.White.copy(alpha = 0.05f)
                 )
             } else if (state.isGeminiLoading) {
                 // Loading Gemini results
@@ -500,14 +512,14 @@ private fun ResultsSection(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        color = Color(0xFF43A047),
+                        color = MintGlow,
                         modifier = Modifier.size(36.dp)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "Getting expert analysis from Gemini AI...",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF43A047)
+                        color = MintGlow
                     )
                 }
             }
@@ -519,10 +531,12 @@ private fun ResultsSection(
                 onClick = onNewAnalysis,
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFE8F5E9),
-                    contentColor = Color(0xFF2E7D32)
+                    containerColor = Color.White.copy(alpha = 0.08f),
+                    contentColor = MintGlow
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, GlassBorder, RoundedCornerShape(12.dp))
             ) {
                 Icon(
                     imageVector = Icons.Default.Refresh,

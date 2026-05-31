@@ -31,6 +31,7 @@ class CropClassifier @Inject constructor(
     private var inputHeight = 224
     private var inputChannels = 3
     private var isQuantized = false
+    private var outputClasses = 0
 
     companion object {
         private const val MODEL_FILENAME = "Crop_Model_.tflite"
@@ -65,6 +66,10 @@ class CropClassifier @Inject constructor(
             // Check if model is quantized
             isQuantized = inputTensor.dataType() == org.tensorflow.lite.DataType.UINT8
 
+            // Read output tensor shape to avoid mismatch with labels.size
+            val outputTensor = interpreter!!.getOutputTensor(0)
+            outputClasses = outputTensor.shape().last()
+
             // Load labels
             labels = loadLabels(LABELS_FILENAME)
         } catch (e: Exception) {
@@ -95,13 +100,18 @@ class CropClassifier @Inject constructor(
 
         // Prepare output buffer
         val outputArray = if (isQuantized) {
-            Array(1) { ByteArray(labels.size) }
+            Array(1) { ByteArray(outputClasses) }
         } else {
-            Array(1) { FloatArray(labels.size) }
+            Array(1) { FloatArray(outputClasses) }
         }
 
         // Run inference
         safeInterpreter.run(inputBuffer, outputArray)
+
+        // Free resized bitmap if it's a new instance
+        if (resizedBitmap != bitmap) {
+            resizedBitmap.recycle()
+        }
 
         // Parse results
         val confidences = if (isQuantized) {
@@ -123,7 +133,7 @@ class CropClassifier @Inject constructor(
     /**
      * Get the total number of classes the model can predict.
      */
-    fun getClassCount(): Int = labels.size
+    fun getClassCount(): Int = outputClasses
 
     /**
      * Release TFLite resources.
