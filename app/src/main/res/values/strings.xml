@@ -1,3 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CropDoctor.AI</string>
+
+    <!-- Landing Screen - Page 1 -->
+    <string name="landing_badge">🌱 Pioneering Agritech</string>
+    <string name="landing_hero_title">Empowering\nthe roots of\nyour harvest.</string>
+    <string name="landing_hero_desc">A profoundly natural, highly advanced ecosystem designed to bridge the gap between farmers and the future. Experience seamless access to AI diagnostics and community growth.</string>
+    <string name="landing_explore_btn">Explore the Ecosystem</string>
+    <string name="landing_ai_card">✨ AI Crop Diagnosis</string>
+
+    <!-- Landing Screen - Page 2 -->
+    <string name="ai_preview_badge">🤖 AI Assistant</string>
+    <string name="ai_assistant_title">CropDoctor Assistant</string>
+    <string name="ai_bot_greeting">Hello! I am your CropDoctor Assistant. How can I help your crops thrive today?</string>
+    <string name="ai_user_msg">I need to diagnose a disease on my wheat crop.</string>
+    <string name="ai_bot_response">Certainly. Let\'s securely analyze your crop and find exactly what the issue is.</string>
+
+    <!-- Landing Screen - Page 3 -->
+    <string name="cta_title">Ready for\nthe harvest?</string>
+    <string name="cta_desc">Step into a beautifully curated environment where your agricultural journey meets seamless, glowing interfaces. Join the community today.</string>
+    <string name="cta_get_started">Get Started</string>
+    <string name="cta_footer">Cultivated with care by the 1%% Team</string>
+
+    <!-- Auth Screen -->
+    <string name="auth_welcome_title">Welcome to CropDoctor.AI</string>
+    <string name="auth_welcome_subtitle">Sign in to access your dashboard</string>
+    <string name="auth_tab_phone">Phone (OTP)</string>
+    <string name="auth_tab_google">Google</string>
+    <string name="auth_phone_label">Phone Number</string>
+    <string name="auth_phone_hint">Enter your 10-digit number</string>
+    <string name="auth_country_code">+91</string>
+    <string name="auth_send_otp">Send OTP</string>
+    <string name="auth_verify_title">Verification Code</string>
+    <string name="auth_verify_subtitle">Enter the 6-digit code sent to</string>
+    <string name="auth_verify_btn">Verify &amp; Login</string>
+    <string name="auth_change_phone">Change phone number</string>
+    <string name="auth_google_desc">Quick and secure access using your Google account.</string>
+    <string name="auth_google_btn">Sign in with Google</string>
+
+    <!-- Splash -->
+    <string name="splash_tagline">Intelligent Crop Health Analysis</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">Welcome,</string>
+    <string name="dashboard_sign_out">Sign Out</string>
+    <string name="dashboard_subtitle">Your crop health dashboard is ready</string>
+
+    <!-- Common -->
+    <string name="loading">Loading…</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
 </resources>

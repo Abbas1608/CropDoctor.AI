@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
+    <!-- Agricultural Glassmorphism Palette -->
+    <color name="forest_green_deep">#FF0A1F14</color>
+    <color name="forest_green_dark">#FF0D2B1A</color>
+    <color name="forest_green">#FF1B4D3E</color>
+    <color name="forest_green_light">#FF2D6B4F</color>
+    <color name="mint_glow">#FF2ECC71</color>
+    <color name="mint_soft">#FFE8F5E9</color>
+    <color name="text_primary">#FFF1F8F2</color>
+    <color name="amber_warning">#FFFFB300</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="transparent">#00000000</color>
 </resources>
