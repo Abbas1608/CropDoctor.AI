@@ -49,7 +49,8 @@ import com.google.firebase.auth.FirebaseAuth
  */
 @Composable
 fun DashboardScreen(
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onNavigateToAnalysis: () -> Unit = {}
 ) {
     val user = remember { FirebaseAuth.getInstance().currentUser }
     val displayName = user?.displayName ?: user?.phoneNumber ?: "Farmer"
@@ -169,18 +170,76 @@ fun DashboardScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                FeatureCard(
-                    icon = Icons.Default.CameraAlt,
-                    title = "Scan Crop",
-                    subtitle = "AI Diagnosis",
-                    modifier = Modifier.weight(1f)
-                )
-                FeatureCard(
-                    icon = Icons.Default.Description,
-                    title = "Reports",
-                    subtitle = "PDF Export",
-                    modifier = Modifier.weight(1f)
-                )
+                GlassCardClickable(
+                    onClick = onNavigateToAnalysis,
+                    modifier = Modifier.weight(1f),
+                    glassAlpha = 0.08f,
+                    cornerRadius = 20.dp,
+                    padding = PaddingValues(20.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .background(MintGlow.copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CameraAlt,
+                            contentDescription = "Scan Crop",
+                            tint = MintGlow,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Text(
+                        text = "Scan Crop",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = TextPrimary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "AI Diagnosis",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextSecondary
+                    )
+                }
+                GlassCardClickable(
+                    onClick = onNavigateToAnalysis,
+                    modifier = Modifier.weight(1f),
+                    glassAlpha = 0.08f,
+                    cornerRadius = 20.dp,
+                    padding = PaddingValues(20.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .background(MintGlow.copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Description,
+                            contentDescription = "Reports",
+                            tint = MintGlow,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Text(
+                        text = "Reports",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = TextPrimary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "PDF Export",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextSecondary
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -203,7 +262,7 @@ fun DashboardScreen(
 
             // Footer
             Text(
-                text = "Phase 2: Camera, YOLO, Gemini & PDF coming soon ✨",
+                text = "Powered by TFLite + Gemini AI ✨",
                 style = MaterialTheme.typography.bodySmall,
                 color = TextMuted,
                 modifier = Modifier

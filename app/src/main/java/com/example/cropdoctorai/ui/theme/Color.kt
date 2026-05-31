@@ -48,3 +48,13 @@ val GradientEnd = Color(0xFF0D2B1A)
 // Glow Effects
 val GreenGlow = Color(0x4D2ECC71)        // MintGlow @ 30%
 val AmberGlow = Color(0x4DFFB300)        // Amber @ 30%
+
+// Analysis Screen Colors
+val HealthyGreen = Color(0xFF4CAF50)
+val DiseaseRed = Color(0xFFE53935)
+val WarningOrange = Color(0xFFEF6C00)
+val OrganicGreen = Color(0xFF2E7D32)
+val ChemicalOrange = Color(0xFFEF6C00)
+val PreventionRed = Color(0xFFC62828)
+val CardBorderLight = Color(0xFFE0E0E0)
+val LightBg = Color(0xFFF8FAF8)

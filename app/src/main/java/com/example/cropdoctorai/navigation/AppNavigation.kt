@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cropdoctorai.ui.screens.analysis.AnalysisScreen
 import com.example.cropdoctorai.ui.screens.auth.AuthScreen
 import com.example.cropdoctorai.ui.screens.dashboard.DashboardScreen
 import com.example.cropdoctorai.ui.screens.landing.LandingScreen
@@ -30,6 +31,9 @@ object AuthRoute
 
 @Serializable
 object DashboardRoute
+
+@Serializable
+object AnalysisRoute
 
 // ═══════════════════════════════════════════
 // Navigation Host
@@ -95,6 +99,18 @@ fun AppNavigation() {
                     navController.navigate(LandingRoute) {
                         popUpTo(DashboardRoute) { inclusive = true }
                     }
+                },
+                onNavigateToAnalysis = {
+                    navController.navigate(AnalysisRoute)
+                }
+            )
+        }
+
+        // ── Analysis: Crop disease detection & analysis ──
+        composable<AnalysisRoute> {
+            AnalysisScreen(
+                onBack = {
+                    navController.popBackStack()
                 }
             )
         }

@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -5,6 +7,14 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
+}
+
+// Load local.properties for API keys
+val localProperties = Properties().apply {
+    val localPropsFile = rootProject.file("local.properties")
+    if (localPropsFile.exists()) {
+        load(localPropsFile.inputStream())
+    }
 }
 
 android {
@@ -21,8 +31,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // TODO: Replace with your Firebase Web Client ID from Firebase Console
-        // Firebase Console → Authentication → Sign-in method → Google → Web client ID
-        buildConfigField("String", "WEB_CLIENT_ID", "\"YOUR_WEB_CLIENT_ID_HERE\"")
+        //  → Authentication → Sign-in method → Google → Web client ID
+        buildConfigField("String", "WEB_CLIENT_ID", "\"${localProperties.getProperty("WEB_CLIENT_ID", "")}\"")
+
+        // Gemini API Key (loaded from local.properties)
+        buildConfigField("String", "GEMINI_API_KEY", "\"${localProperties.getProperty("GEMINI_API_KEY", "")}\"")
     }
 
     buildTypes {
@@ -42,6 +55,11 @@ android {
         compose = true
         buildConfig = true
     }
+
+    // Prevent compression of TFLite model files
+    androidResources {
+        noCompress += "tflite"
+    }
 }
 
 dependencies {
@@ -60,6 +78,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Navigation Compose
     implementation(libs.androidx.navigation.compose)
@@ -80,6 +99,15 @@ dependencies {
 
     // Kotlin Serialization (for type-safe nav args)
     implementation(libs.kotlinx.serialization.json)
+
+    // TFLite — On-device ML inference
+    implementation(libs.tensorflow.lite)
+
+    // Gemini AI — Google Generative AI SDK
+    implementation(libs.google.generativeai)
+
+    // Image Loading
+    implementation(libs.coil.compose)
 
     // Testing
     testImplementation(libs.junit)
