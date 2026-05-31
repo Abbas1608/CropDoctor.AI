@@ -48,28 +48,28 @@ fun ResultCardsRow(
     alternatives: List<CropPrediction>,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    Column(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         // Card 1: Crop Identified
         CropIdentifiedCard(
             prediction = prediction,
             alternatives = alternatives,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.fillMaxWidth()
         )
 
         // Card 2: Health Status
         HealthStatusCard(
             isHealthy = prediction.isHealthy,
             confidence = prediction.confidence,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.fillMaxWidth()
         )
 
         // Card 3: Disease/Pest
         DiseasePestCard(
             prediction = prediction,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
